@@ -7,10 +7,12 @@ AI가 근거표 수백 행을 한 글자씩 써내던 일을 대신한다 (2단�
 """
 import csv
 import re
+import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
-자료 = Path(__file__).resolve().parent.parent.parent / 'research' / 'data'
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from 경로 import 자료  # noqa: E402
 열이름 = ['ID', '항목', '원자료 항목명', '수치', '파일 · 행 위치', '출처', '연도', '표본 · 대상', '한계', '경고']
 
 계절_월 = {'봄': [3, 4, 5], '여름': [6, 7, 8], '가을': [9, 10, 11], '겨울': [1, 2, 12]}

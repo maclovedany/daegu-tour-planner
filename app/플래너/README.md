@@ -32,7 +32,7 @@ cd 플래너/영상 && npm install && npm run render            # 영상/out/cou
 
 | 에이전트 | 하는 일 | 걸리는 시간 (실측) |
 |---|---|---|
-| 총괄 | 단계 에이전트와 검증 에이전트를 스스로 부르고, 걸린 단계를 지시와 함께 다시 돌릴지 정한다 | 호출 사이 2~3초 |
+| 총괄 | 단계 에이전트와 검증 에이전트를 스스로 부르고, 걸린 단계를 지시와 함께 다시 돌릴지 정한다 (`걸음.py`) | 판단 한 번에 3~5초 |
 | 자료 확인 | 조건에 맞는 근거 행과 경고를 CSV에서 코드로 뽑는다 (`근거추출.py`, AI 없음) | 0.1초 이내 |
 | 수요 분석 | 근거표를 보고 요약과 해석만 쓴다 | 8~20초 |
 | 코스 짜기 | 지침과 장소 자료를 한 번에 받아 코스 초안 JSON을 쓴다 | 38~52초 (제한 2분) |
@@ -44,9 +44,12 @@ cd 플래너/영상 && npm install && npm run render            # 영상/out/cou
 
 ## Vercel 배포판
 
-- 진입점은 `app/index.py`이다 (Vercel 프로젝트의 Root Directory가 `app`). 화면과 `견본/`에 옮겨 둔 기획을 **보여 주기만** 한다.
-- 견본을 새로 만들려면 `python 플래너/견본_만들기.py`를 실행하고 커밋한다.
-- 배포판에서 새 기획을 만들려면 AI 호출을 Anthropic API 키 방식으로, 저장을 Supabase로 옮겨야 한다 (`supabase/`).
+- 진입점은 `app/index.py`이다 (Vercel 프로젝트의 Root Directory가 `app`).
+- 로컬과 같은 에이전트 엔진(`걸음.py`)을 쓴다. 서버가 요청 한 번에 한 걸음만 하고, 화면이 `/api/step`을 되풀이해 부른다. 상태와 결과는 Supabase에 둔다 (`구름.py`).
+- 환경변수: `GEMINI_API_KEY`(필수), `GEMINI_MODEL`(선택, 기본 `gemini-3.8-flash`), `SUPABASE_URL`, `SUPABASE_ANON_KEY`. `HARUHARU_ACCESS_CODE`를 넣으면 그 코드를 아는 사람만 새 기획을 만든다.
+- Supabase에는 `supabase/migrations/`의 두 파일을 이름 순서대로 실행하고, 장소 자료는 `supabase/seed.sql`로 넣는다.
+- 배포판은 `app/` 밖을 볼 수 없다. 지침이나 자료를 고쳤으면 `python 플래너/견본_만들기.py`로 `묶음/`과 `견본/`을 다시 만들고 커밋한다.
+- 홍보 문구 만들기와 PDF · 영상 내보내기는 아직 로컬에서만 된다.
 
 ## 알아 둘 점
 

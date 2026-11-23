@@ -25,11 +25,20 @@
   <div id="stepper" class="stepper" hidden aria-live="polite">
     <ol id="steps" class="steps"></ol>
     <div id="stepCards" class="stepcards"></div>
+    <p class="stepfoot"><span id="stepNote"></span><button id="stepAgain" type="button" class="ghost" hidden>조건을 다시 고르기</button></p>
+    <div id="agentMap" class="agentmap" aria-label="에이전트 구성">
+      <div class="agent boss" data-agent="총괄"><b>총괄 에이전트</b><small>누구를 부를지, 다시 시킬지 정합니다</small></div>
+      <div class="agentrow">
+        <div class="agent" data-agent="자료 확인"><b>자료 확인</b><small>근거와 경고를 자료에서 뽑습니다</small><em></em></div>
+        <div class="agent" data-agent="수요 분석"><b>수요 분석</b><small>근거를 요약하고 해석합니다</small><em></em></div>
+        <div class="agent" data-agent="코스 짜기"><b>코스 짜기</b><small>낮, 저녁, 숙박을 잇습니다</small><em></em></div>
+        <div class="agent" data-agent="검증"><b>검증</b><small>결과를 자료와 대조합니다</small><em></em></div>
+      </div>
+    </div>
     <details id="agentLog" class="agentlog" open>
       <summary>에이전트가 한 일</summary>
       <ol id="agentLogList"></ol>
     </details>
-    <p class="stepfoot"><span id="stepNote"></span><button id="stepAgain" type="button" class="ghost" hidden>조건을 다시 고르기</button></p>
   </div>
   <form id="newForm" class="startcard">
     <h1>대구에서 머무는 여행,<br>어떤 코스를 기획하나요?</h1>

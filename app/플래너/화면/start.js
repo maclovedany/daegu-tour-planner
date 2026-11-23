@@ -4,6 +4,8 @@ const get = async (url) => (await fetch(url)).json();
 const FIELDS = [['계절', '계절', 'radio'], ['언어권', '대상 언어권 (여러 개 가능)', 'checkbox'], ['지역', '지역 (여러 개 가능)', 'checkbox'], ['체류기간', '체류 기간', 'radio']];
 const HELP = ['이 조건으로 볼 수 있는 자료가 있는지 확인합니다.', '자료의 수치를 읽어 근거와 주의할 점을 정리합니다.', '낮, 저녁, 숙박을 잇는 코스 초안을 만듭니다.'];
 let timer = 0;
+let cloud = false;      // 배포판: 서버가 요청 한 번에 한 걸음만 하므로 화면이 /api/step 을 되풀이해 부른다
+let last = null;
 
 const days = (v) => (v === '1박2일' ? '1박 2일' : v);
 const label = (c) => `${c.계절}, ${(c.지역 || []).join('·')}, ${(c.언어권 || []).join('·')}, ${days(c.체류기간)}`;
@@ -14,6 +16,13 @@ async function setup() {
   document.body.classList.add('home');
   $('landing').hidden = false;
   const [options, plans, progress] = await Promise.all([get('/api/options'), get('/api/plans'), get('/api/progress')]);
+  cloud = Boolean(options.구름);
+  if (options.코드필요) {
+    const fs = node('fieldset');
+    fs.append(node('legend', '', '접속 코드'), Object.assign(node('input'), { type: 'password', name: '코드', autocomplete: 'off', className: 'code' }));
+    $('newFields').after(fs);
+  }
+  setInterval(() => { if (last && last.상태 === '진행중') drawNote(last); }, 1000);
   for (const [key, title, type] of FIELDS) {
     const fs = node('fieldset'), chips = node('div', 'chips');
     fs.append(node('legend', '', title), chips);
@@ -42,11 +51,12 @@ async function setup() {
 async function submit(ev) {
   ev.preventDefault();
   const data = new FormData($('newForm'));
-  const body = { 계절: data.get('계절'), 언어권: data.getAll('언어권'), 지역: data.getAll('지역'), 체류기간: data.get('체류기간') };
+  const body = { 계절: data.get('계절'), 언어권: data.getAll('언어권'), 지역: data.getAll('지역'), 체류기간: data.get('체류기간'), 코드: data.get('코드') || '' };
   const r = await fetch('/api/start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   const result = await r.json();
   if (!r.ok) { $('newError').textContent = result.오류 || '시작하지 못했습니다. 다시 시도해 주세요.'; return; }
   $('newError').textContent = '';
+  if (cloud) return walk(result);
   watch();
 }
 
@@ -75,10 +85,38 @@ function drawSteps(p) {
     return li;
   }));
   $('agentLog').hidden = !(p.활동 || []).length;
+  // 에이전트 구조도: 지금 일하는 에이전트가 형광색으로 깜빡인다
+  const busy = new Set(running ? p.일하는중 || [] : []);
+  document.querySelectorAll('#agentMap .agent').forEach((box) => {
+    const name = box.dataset.agent, mine = (p.활동 || []).filter((a) => a.누가 === name && a.초 != null);
+    box.classList.toggle('on', busy.has(name));
+    box.classList.toggle('used', mine.length > 0);
+    const note = box.querySelector('em');
+    if (note) note.textContent = busy.has(name) ? '일하는 중' : mine.length ? `${mine.length}번, 마지막 ${mine[mine.length - 1].초}초` : '';
+  });
+  drawNote(p);
+  $('stepAgain').hidden = running;
+}
+
+function drawNote(p) {
+  const running = p.상태 === '진행중', finished = p.상태 === '완료';
   const seconds = Math.max(0, Math.round((Date.now() - new Date(p.시작시각)) / 1000));
   $('stepNote').textContent = running ? `${HELP[p.단계] || '결과를 검증하고 있습니다.'} 시작한 지 ${seconds}초 지났습니다.`
     : finished ? (p.마무리 || '코스 초안이 준비됐습니다.') + (p.전체초 ? ` (${Math.round(p.전체초)}초)` : '') : '기획을 끝까지 만들지 못했습니다.';
-  $('stepAgain').hidden = running;
+}
+
+/** 배포판: 끝날 때까지 한 걸음씩 부른다. 판단 걸음은 몇 초, 실행 걸음은 길면 2분 걸린다. */
+async function walk(p) {
+  $('stepper').hidden = false;
+  $('newForm').hidden = true;
+  for (let i = 0; i < 40 && p.상태 === '진행중'; i++) {
+    last = p; drawSteps(p);
+    const r = await fetch('/api/step', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: p.id }) });
+    const next = await r.json().catch(() => ({}));
+    if (!r.ok || !next.상태) { p = { ...p, 상태: '멈춤', 일하는중: [], 안내: next.오류 || '서버가 응답하지 않았습니다. 잠시 뒤 다시 시작해 주세요.' }; break; }
+    p = next;
+  }
+  last = p; drawSteps(p);
 }
 
 async function watch() {
@@ -87,6 +125,7 @@ async function watch() {
   if (p.상태 === '없음') return;
   $('stepper').hidden = false;
   $('newForm').hidden = true;
+  last = p;
   drawSteps(p);
   if (p.상태 === '진행중') timer = setTimeout(watch, 1000);
 }

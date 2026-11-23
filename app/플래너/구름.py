@@ -33,6 +33,7 @@ class DB:
 
     def _요청(self, 방법, 경로, 본문=None):
         머리 = {'apikey': self.키, 'Authorization': 'Bearer ' + self.키, 'Content-Type': 'application/json', 'Prefer': 'return=representation'}
+        경로 = quote(경로, safe='/?&=.,:*()_-~%')   # 조건 값에 한글이 들어간다 (status=eq.초안). 주소는 ASCII여야 한다
         요청 = urllib.request.Request(self.주소 + 경로, data=None if 본문 is None else json.dumps(본문, ensure_ascii=False).encode('utf-8'), headers=머리, method=방법)
         try:
             with urllib.request.urlopen(요청, timeout=20) as 응답:

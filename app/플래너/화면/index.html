@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>하루하루 코스 지도</title>
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/app.js"></script>
+<script type="module" src="/start.js"></script>
+</head>
+<body>
+<canvas id="scene" aria-label="코스 3D 지도"></canvas>
+<div id="labels" aria-hidden="true"></div>
+
+<header class="head">
+  <h1 id="title">코스를 불러오는 중</h1>
+  <p id="subtitle"></p>
+  <div class="headrow">
+    <a id="homeLink" class="ghost" href="/">새 기획 만들기</a>
+    <a id="promoLink" class="ghost" href="/promo.html">홍보물 보기</a>
+  </div>
+</header>
+
+<section id="landing" class="landing" hidden>
+  <div id="stepper" class="stepper" hidden aria-live="polite">
+    <ol id="steps" class="steps"></ol>
+    <div id="stepCards" class="stepcards"></div>
+    <p class="stepfoot"><span id="stepNote"></span><button id="stepAgain" type="button" class="ghost" hidden>조건을 다시 고르기</button></p>
+  </div>
+  <form id="newForm" class="startcard">
+    <h1>대구에서 머무는 여행,<br>어떤 코스를 기획하나요?</h1>
+    <div id="newFields"></div>
+    <p class="note">조건을 고르면 자료 확인, 수요 분석, 코스 짜기를 이어서 진행합니다. 보통 15~20분 걸리고 AI 사용량이 듭니다.</p>
+    <p id="newError" class="error" role="alert"></p>
+    <button type="submit" class="primary">기획 시작</button>
+    <div id="saved" class="saved" hidden><h2>저장된 기획 열기</h2><ul id="savedList"></ul></div>
+  </form>
+</section>
+
+<aside class="side" aria-label="일정">
+  <ol id="timeline" class="timeline"></ol>
+  <section id="todo" class="todo" hidden>
+    <h2>아직 정하지 않은 것</h2>
+    <ul id="todoList"></ul>
+  </section>
+</aside>
+
+<section id="caution" class="caution" hidden>
+  <h2>이 코스를 볼 때 알아 둘 점</h2>
+  <ul id="cautionList"></ul>
+  <button id="cautionMore" type="button" class="link"></button>
+</section>
+
+<article id="card" class="card" hidden aria-live="polite"></article>
+
+<nav class="bar" aria-label="지도 조작">
+  <ul id="legend" class="legend" aria-label="동선 구분"></ul>
+  <button id="play" type="button" class="primary">코스 따라 걷기</button>
+  <div class="seg" role="group" aria-label="보는 방식">
+    <button type="button" data-view="whole" aria-pressed="true">전체 보기</button>
+    <button type="button" data-view="follow" aria-pressed="false">따라가기</button>
+    <button type="button" data-view="walk" aria-pressed="false">걸어서 보기</button>
+  </div>
+</nav>
+
+<p class="credit">지도 바탕 © OpenStreetMap contributors · 경로선은 장소를 잇는 표시이며 실제 이동 경로가 아닙니다</p>
+<div id="empty" class="empty" hidden></div>
+</body>
+</html>

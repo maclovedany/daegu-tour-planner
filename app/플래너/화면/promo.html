@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>하루하루 홍보물</title>
+<link rel="stylesheet" href="/promo.css">
+<link rel="stylesheet" id="pageSize" href="/page/map.css">
+<script type="module" src="/promo.js"></script>
+</head>
+<body>
+<header class="tools">
+  <a class="back" href="/" id="back">코스 지도로 돌아가기</a>
+  <nav id="kinds" class="kinds" aria-label="홍보물 종류"></nav>
+  <div class="right">
+    <select id="lang" aria-label="문구 언어"></select>
+    <button id="print" type="button" class="primary">PDF로 저장</button>
+  </div>
+</header>
+<p id="status" class="status" role="status"></p>
+<main id="stage" class="stage"></main>
+</body>
+</html>

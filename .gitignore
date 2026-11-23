@@ -2,3 +2,26 @@
 .env
 .env.*
 !.env.example
+
+# 의존성 · 가상환경 · 캐시
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# 실행 결과와 내보낸 파일 (기획 기록, 홍보물 PDF · 영상)
+app/runs/
+app/플래너/영상/out/
+
+# 배포 도구가 만드는 로컬 설정
+.vercel/
+supabase/.temp/
+supabase/.branches/
+
+# 참고용으로 받아 둔 그림 · 발표 자료 (앱에서 쓰지 않음)
+/stepper ui.png
+/1일차 2일차.png
+/대구의 봄, 다채로운 여행 풍경.png
+/*_캐릭터_디자인_시트_v1.0_별머리핀.webp
+/1119_*.html

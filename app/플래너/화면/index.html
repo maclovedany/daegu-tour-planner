@@ -25,12 +25,16 @@
   <div id="stepper" class="stepper" hidden aria-live="polite">
     <ol id="steps" class="steps"></ol>
     <div id="stepCards" class="stepcards"></div>
+    <details id="agentLog" class="agentlog" open>
+      <summary>에이전트가 한 일</summary>
+      <ol id="agentLogList"></ol>
+    </details>
     <p class="stepfoot"><span id="stepNote"></span><button id="stepAgain" type="button" class="ghost" hidden>조건을 다시 고르기</button></p>
   </div>
   <form id="newForm" class="startcard">
     <h1>대구에서 머무는 여행,<br>어떤 코스를 기획하나요?</h1>
     <div id="newFields"></div>
-    <p class="note">조건을 고르면 자료 확인, 수요 분석, 코스 짜기를 이어서 진행합니다. 보통 15~20분 걸리고 AI 사용량이 듭니다.</p>
+    <p class="note">조건을 고르면 총괄 에이전트가 자료 확인, 수요 분석, 코스 짜기, 검증을 이어서 진행합니다. 보통 1~2분 걸리고 AI 사용량이 듭니다.</p>
     <p id="newError" class="error" role="alert"></p>
     <button type="submit" class="primary">기획 시작</button>
     <div id="saved" class="saved" hidden><h2>저장된 기획 열기</h2><ul id="savedList"></ul></div>

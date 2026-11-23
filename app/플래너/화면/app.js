@@ -462,8 +462,7 @@ async function start() {
     $('promoLink').href = '/promo.html?id=' + encodeURIComponent(pick.id);
     const days = [['1일차', '#2f7de1', '']].concat(plan.조건.체류기간 === '1박2일' ? [['2일차', '#d9362e', 'dash']] : []);
     $('legend').replaceChildren(...days.map(([name, c, cls]) => { const li = document.createElement('li'); li.className = cls; li.style.setProperty('--c', c); li.append(document.createElement('i'), name); return li; }));
-    loadChar('weasel', 18, 0);
-    loadChar('raccoon', 16, 10);
+    loadChar('raccoon', 17, 0);   // 지도에서는 너구리 혼자 걷는다
     wholeView();
     $('play').addEventListener('click', play);
     document.querySelectorAll('.seg button').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));

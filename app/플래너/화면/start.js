@@ -67,9 +67,17 @@ function drawSteps(p) {
     if (finished && i === names.length - 1) { const a = node('a', 'primary', '코스 지도 보기'); a.href = '/?id=' + encodeURIComponent(p.id); box.append(a); }
     return box;
   }));
-  const minutes = Math.max(0, Math.round((Date.now() - new Date(p.시작시각)) / 60000));
-  $('stepNote').textContent = running ? `${HELP[p.단계] || ''} 시작한 지 ${minutes}분 지났습니다. 창을 닫아도 계속 진행됩니다.`
-    : finished ? '코스 초안이 준비됐습니다.' : '기획을 끝까지 만들지 못했습니다.';
+  // 에이전트 활동 기록: 누가 무엇을 했고 몇 초 걸렸는지
+  $('agentLogList').replaceChildren(...(p.활동 || []).map((a) => {
+    const li = node('li');
+    li.append(node('b', '', a.누가), node('span', '', a.내용));
+    if (a.초 != null) li.append(node('em', '', `${a.초}초`));
+    return li;
+  }));
+  $('agentLog').hidden = !(p.활동 || []).length;
+  const seconds = Math.max(0, Math.round((Date.now() - new Date(p.시작시각)) / 1000));
+  $('stepNote').textContent = running ? `${HELP[p.단계] || '결과를 검증하고 있습니다.'} 시작한 지 ${seconds}초 지났습니다.`
+    : finished ? (p.마무리 || '코스 초안이 준비됐습니다.') + (p.전체초 ? ` (${Math.round(p.전체초)}초)` : '') : '기획을 끝까지 만들지 못했습니다.';
   $('stepAgain').hidden = running;
 }
 
@@ -80,7 +88,7 @@ async function watch() {
   $('stepper').hidden = false;
   $('newForm').hidden = true;
   drawSteps(p);
-  if (p.상태 === '진행중') timer = setTimeout(watch, 4000);
+  if (p.상태 === '진행중') timer = setTimeout(watch, 1000);
 }
 
 setup();

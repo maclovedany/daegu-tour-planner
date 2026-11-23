@@ -1,0 +1,17 @@
+# 배포판에 필요 없는 큰 자료와 로컬 전용 파일 (함수 크기 제한을 넘지 않게)
+research/data/raw
+research/data/관광데이터랩_빅데이터
+research/data/상권
+research/data/소비체류
+research/data/전국조사
+research/data/문서
+app/runs
+app/.venv
+app/플래너/영상
+정리본
+inventory
+supabase
+*.pdf
+*.xlsx
+*.hwpx
+*.zip

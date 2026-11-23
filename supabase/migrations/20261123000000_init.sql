@@ -26,6 +26,11 @@ create table public.plans (
   current_stage smallint not null default 0 check (current_stage between 0 and 5),
   auto_progress boolean not null default true,   -- 1·2단계의 담당자 선택을 화면이 자동으로 넘겼는지
   notice        text,                            -- 멈췄을 때 사용자에게 보일 안내
+  summary       text,                            -- 총괄 에이전트의 마무리 한두 문장
+  left_for_human jsonb not null default '[]',    -- 사람이 정하거나 확인할 일
+  unresolved    jsonb not null default '[]',     -- 에이전트가 고치지 못하고 남긴 문제
+  activity      jsonb not null default '[]',     -- 에이전트 활동 기록 [{누가, 내용, 초, 시각}]
+  total_seconds numeric,                         -- 시작부터 마무리까지 걸린 시간
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now()
 );

@@ -12,7 +12,7 @@ sys.path.insert(0, str(여기))
 
 from 관리자조회 import 결과저장소  # noqa: E402
 from 보기 import 기획목록, 기획보기  # noqa: E402
-from 실행 import 자동기획  # noqa: E402
+from 자율 import 자율기획  # noqa: E402
 from 홍보 import 홍보초안, 홍보읽기  # noqa: E402
 from 흐름 import 계절_선택지, 언어권_선택지, 지역_선택지, 확정체류기간_선택지  # noqa: E402
 
@@ -22,7 +22,7 @@ from 흐름 import 계절_선택지, 언어권_선택지, 지역_선택지, 확�
 
 
 def 핸들러(저장소, 기획=None):
-    기획 = 기획 or 자동기획(저장소)
+    기획 = 기획 or 자율기획(저장소)
     홍보 = 홍보초안(저장소)
 
     class Handler(BaseHTTPRequestHandler):

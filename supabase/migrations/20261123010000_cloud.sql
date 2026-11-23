@@ -7,6 +7,13 @@
 alter table public.plans alter column owner_id drop not null;            -- 로그인 없이 만든 기획은 주인이 없다
 alter table public.plans add column if not exists agent_state jsonb;     -- 에이전트 엔진이 요청 사이에 이어 가는 상태
 
+-- 첫 파일을 예전 판으로 실행한 경우 빠져 있는 열 (이미 있으면 건너뛴다)
+alter table public.plans add column if not exists summary        text;
+alter table public.plans add column if not exists left_for_human jsonb not null default '[]';
+alter table public.plans add column if not exists unresolved     jsonb not null default '[]';
+alter table public.plans add column if not exists activity       jsonb not null default '[]';
+alter table public.plans add column if not exists total_seconds  numeric;
+
 grant usage on schema public to anon;
 grant select, insert, update on public.plans to anon;
 grant select, insert on public.stage_results, public.courses, public.course_stops to anon;
@@ -28,3 +35,5 @@ drop policy if exists course_stops_public on public.course_stops;
 create policy course_stops_public on public.course_stops for all to anon
   using (exists (select 1 from public.courses c join public.plans p on p.id = c.plan_id where c.id = course_id and p.owner_id is null))
   with check (exists (select 1 from public.courses c join public.plans p on p.id = c.plan_id where c.id = course_id and p.owner_id is null));
+
+notify pgrst, 'reload schema';   -- API가 새 열을 바로 알아보게 한다

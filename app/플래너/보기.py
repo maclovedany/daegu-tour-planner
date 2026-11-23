@@ -11,7 +11,9 @@ sys.path.insert(0, str(앱))
 from 장소정보 import _이름, 장소목록  # noqa: E402
 
 자료 = Path(__file__).resolve().parent / '자료'
-이동파일 = 앱.parent / 'research' / 'data' / '이동시간_중구동구_데모코스_2026.csv'
+def _이동파일():
+    from 설정 import 설정_읽기, 자료_파일
+    return 자료_파일(설정_읽기(), 'HARUHARU_TRAVEL_FILE', '이동시간_중구동구_데모코스_2026.csv')
 
 
 def 좌표목록():
@@ -26,7 +28,7 @@ def 좌표목록():
 
 def 이동목록():
     결과 = {}
-    with 이동파일.open(encoding='utf-8-sig', newline='') as f:
+    with _이동파일().open(encoding='utf-8-sig', newline='') as f:
         for 행 in csv.DictReader(f):
             결과[(_이름(행['출발장소']), _이름(행['도착장소']))] = {
                 '도보': 행['도보_분'], '대중교통': 행['대중교통_분'], '노선': 행['이용노선'],

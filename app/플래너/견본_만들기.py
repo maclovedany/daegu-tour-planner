@@ -37,3 +37,6 @@ if __name__ == '__main__':
             if (시험 / 이름).is_file():
                 shutil.copyfile(시험 / 이름, 새폴더 / 이름)
         print('견본:', 기획['id'], 기획['조건'])
+    (견본 / '자료').mkdir(parents=True, exist_ok=True)
+    for 이름 in ['장소운영정보_중구동구_데모코스_2026.csv', '이동시간_중구동구_데모코스_2026.csv']:   # 배포판은 app/ 밖을 볼 수 없다
+        shutil.copyfile(여기.parent.parent / 'research' / 'data' / 이름, 견본 / '자료' / 이름)

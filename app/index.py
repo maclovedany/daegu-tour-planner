@@ -4,20 +4,23 @@ Vercel에서는 새 기획을 만들지 않는다. 지금 AI 실행은 로컬의
 배포판에서 만들려면 Anthropic API 키로 직접 부르고 결과를 Supabase에 저장하도록 옮겨야 한다 (supabase/ 의 SQL이 그 자리다).
 """
 import json
+import os
 import sys
 from pathlib import Path
 from urllib.parse import parse_qs
 
-뿌리 = Path(__file__).resolve().parent.parent
-sys.path[:0] = [str(뿌리 / 'app'), str(뿌리 / 'app' / '플래너')]
+앱 = Path(__file__).resolve().parent          # Vercel 프로젝트의 Root Directory가 app 이다
+견본 = 앱 / '플래너' / '견본'
+os.environ.setdefault('HARUHARU_DATA_DIR', str(견본 / '자료'))   # 배포판은 app/ 밖의 research/data 를 볼 수 없다
+sys.path[:0] = [str(앱), str(앱 / '플래너')]
 
 from 관리자조회 import 결과저장소  # noqa: E402
 from 보기 import 기획목록, 기획보기  # noqa: E402
 from 홍보 import 홍보읽기  # noqa: E402
 from 흐름 import 계절_선택지, 언어권_선택지, 지역_선택지, 확정체류기간_선택지  # noqa: E402
 
-화면 = 뿌리 / 'app' / '플래너' / '화면'
-저장소 = 결과저장소(뿌리 / 'app' / '플래너' / '견본')
+화면 = 앱 / '플래너' / '화면'
+저장소 = 결과저장소(견본)
 형식 = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
       '.json': 'application/json; charset=utf-8', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml'}
 안내 = '배포판은 저장해 둔 기획을 보여 주기만 합니다. 새 기획과 홍보 문구는 로컬에서 만들어 주세요.'

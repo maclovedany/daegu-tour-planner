@@ -44,7 +44,7 @@ cd 플래너/영상 && npm install && npm run render            # 영상/out/cou
 
 ## Vercel 배포판
 
-- 진입점은 저장소 최상위 `api/index.py`이다. 화면과 `견본/`에 옮겨 둔 기획을 **보여 주기만** 한다.
+- 진입점은 `app/index.py`이다 (Vercel 프로젝트의 Root Directory가 `app`). 화면과 `견본/`에 옮겨 둔 기획을 **보여 주기만** 한다.
 - 견본을 새로 만들려면 `python 플래너/견본_만들기.py`를 실행하고 커밋한다.
 - 배포판에서 새 기획을 만들려면 AI 호출을 Anthropic API 키 방식으로, 저장을 Supabase로 옮겨야 한다 (`supabase/`).
 

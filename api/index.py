@@ -23,7 +23,7 @@ from 흐름 import 계절_선택지, 언어권_선택지, 지역_선택지, 확�
 안내 = '배포판은 저장해 둔 기획을 보여 주기만 합니다. 새 기획과 홍보 문구는 로컬에서 만들어 주세요.'
 
 
-def app(environ, start_response):
+def _앱(environ, start_response):
     def 응답(상태, 본문, 타입='application/json; charset=utf-8', 보관='no-store'):
         데이터 = 본문 if isinstance(본문, bytes) else json.dumps(본문, ensure_ascii=False).encode('utf-8')
         start_response(상태, [('Content-Type', 타입), ('Content-Length', str(len(데이터))), ('Cache-Control', 보관),
@@ -52,3 +52,6 @@ def app(environ, start_response):
         return 응답('404 Not Found', {'오류': '없는 페이지'})
     except (ValueError, OSError, KeyError):
         return 응답('404 Not Found', {'오류': '기획 기록을 읽을 수 없습니다.'})
+
+
+app = _앱   # Vercel이 찾는 WSGI 진입점 이름

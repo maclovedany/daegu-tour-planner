@@ -133,7 +133,7 @@ function buildCourse(plan, project) {
     s.slot = SLOT[s.시간칸] || 'day';
     if (!s.좌표) return;
     s.pos = project(s.좌표.lat, s.좌표.lon);
-    for (const other of placed) if (other.pos.distanceTo(s.pos) < 8) s.pos.add(new THREE.Vector3(9, 0, 7));  // 같은 곳을 두 번 들르면 핀을 살짝 옮겨 겹치지 않게
+    for (const other of placed) if (other.pos.distanceTo(s.pos) < 5) s.pos.add(new THREE.Vector3(5, 0, 4));  // 같은 곳을 두 번 들르면 핀을 살짝 옮겨 겹치지 않게
     s.no = ++n;
     placed.push(s);
     const color = COLOR[s.slot];
@@ -149,6 +149,7 @@ function buildCourse(plan, project) {
     blob.rotation.x = -Math.PI / 2; blob.position.y = 0.3;
     head.scale.set(1, 1, 0.82);
     pin.add(cone, head, dot, blob);
+    pin.scale.setScalar(0.5);   // 핀 크기 절반
     pin.position.copy(s.pos);
     scene.add(pin);
     s.pin = pin; s.headMat = headMat;
@@ -156,7 +157,7 @@ function buildCourse(plan, project) {
     el.type = 'button'; el.className = 'pinlabel'; el.style.setProperty('--c', color);
     el.innerHTML = `<b>${s.no}</b>`; el.append(s.이름);
     el.addEventListener('click', () => select(i, true));
-    s.label = addLabel(el, s.pos.clone().setY(19));
+    s.label = addLabel(el, s.pos.clone().setY(10));
   });
   state.stops = plan.일정;
 

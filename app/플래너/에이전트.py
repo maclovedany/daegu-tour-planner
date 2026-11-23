@@ -63,14 +63,29 @@ async def _클로드(시스템, 입력, 모델):
     return '\n'.join(조각).strip()
 
 
+_생각줄이기 = True   # 생각 단계를 최소로 해 응답을 빠르게 한다. 모델이 이 설정을 받지 않으면 한 번 실패한 뒤로는 끈다
+
+
 def _제미나이(시스템, 입력, 설정):
+    global _생각줄이기
     from google import genai
-    from google.genai import types
+    from google.genai import errors, types
     모델 = (설정.get('GEMINI_MODEL') or 'gemini-3.8-flash').strip()   # 기본값은 .env.example 과 같다
     창 = genai.Client(api_key=설정['GEMINI_API_KEY'].strip())
+
+    def 한번(생각):
+        추가 = {'thinking_config': types.ThinkingConfig(thinking_level='MINIMAL')} if 생각 else {}
+        return 창.models.generate_content(model=모델, contents=입력, config=types.GenerateContentConfig(
+            system_instruction=시스템, response_mime_type='application/json', **추가))
+
     try:
-        응답 = 창.models.generate_content(model=모델, contents=입력, config=types.GenerateContentConfig(
-            system_instruction=시스템, response_mime_type='application/json'))
+        try:
+            응답 = 한번(_생각줄이기)
+        except errors.ClientError:
+            if not _생각줄이기:
+                raise
+            _생각줄이기 = False
+            응답 = 한번(False)
     finally:
         창.close()
     if not 응답.text:
